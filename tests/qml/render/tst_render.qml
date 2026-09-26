@@ -166,6 +166,8 @@ TestCase {
   function init() {
     useTheme("default")
     Color.shellValues = ({})
+    Style.cornerRadius = 7
+    Style.normalBorderWidth = 1
   }
 
   function open(count, width, height, mode, rows, monitorX) {
@@ -178,10 +180,18 @@ TestCase {
     return fathom
   }
 
+  // The scene of 02-ten-windows with Omarchy's default square corners (as a
+  // [fathom] override, with a heavier border), and with a rounded theme.
   function test_square_appearance() {
     Color.shellValues = ({ "fathom.corner-radius": "0", "fathom.border-width": "2" })
     const fathom = open(10, 1600, 1000, "hold")
     render("square-appearance", fathom)
+  }
+
+  function test_rounded_appearance() {
+    Style.cornerRadius = 12
+    const fathom = open(10, 1600, 1000, "hold")
+    render("rounded-appearance", fathom)
   }
 
   function test_1_three_windows() {
