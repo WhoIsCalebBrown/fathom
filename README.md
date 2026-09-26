@@ -96,30 +96,35 @@ released; a switch too quick for it to take the keyboard stays open until
 
 ## Install
 
-```bash
-omarchy plugin add https://github.com/mtolhuys/fathom --enable
-```
+1. Install the plugin and enable it:
 
-Then give `Alt`+`Tab` to Fathom. Add this block at the end of
-`~/.config/hypr/bindings.lua`:
+   ```bash
+   omarchy plugin add https://github.com/mtolhuys/fathom --enable
+   ```
 
-```lua
--- fathom: begin
-do
-  local fathom = os.getenv("HOME") .. "/.config/omarchy/plugins/io.github.mtolhuys.fathom/hypr/fathom.lua"
-  local file = io.open(fathom, "r")
-  if file then
-    file:close()
-    pcall(dofile, fathom)
-  end
-end
--- fathom: end
-```
+   `--enable` loads the overlay but leaves `Alt`+`Tab` where it was until
+   step 2.
 
-Hyprland reloads its config when you save the file, and `Alt`+`Tab` opens
-Fathom. The block does nothing while Fathom is not installed or not enabled
-(the snippet checks the shell's `shell.json`), and an error in it can never
-stop the rest of your config from loading.
+2. Give `Alt`+`Tab` to Fathom. Add this block at the end of
+   `~/.config/hypr/bindings.lua`:
+
+   ```lua
+   -- fathom: begin
+   do
+     local fathom = os.getenv("HOME") .. "/.config/omarchy/plugins/io.github.mtolhuys.fathom/hypr/fathom.lua"
+     local file = io.open(fathom, "r")
+     if file then
+       file:close()
+       pcall(dofile, fathom)
+     end
+   end
+   -- fathom: end
+   ```
+
+   Hyprland reloads its config when you save the file, and `Alt`+`Tab` opens
+   Fathom. The block does nothing while Fathom is not installed or not enabled
+   (the snippet checks the shell's `shell.json`), and an error in it can never
+   stop the rest of your config from loading.
 
 Check who owns `Alt`+`Tab` at any time:
 
@@ -130,8 +135,14 @@ bash ~/.config/omarchy/plugins/io.github.mtolhuys.fathom/bin/load-bindings --che
 The snippet takes over `Alt`+`Tab` and `Alt`+`Shift`+`Tab` from Omarchy's
 defaults, adds a key hook that reports the `Alt` release (following XKB
 options that move `Alt`, such as `altwin:swap_alt_win`, and ignoring an
-`AltGr`), and frosts the background behind the overlay. If another switcher binds `Alt`+`Tab`, remove
-its line, or keep it as the fallback for when Fathom is not installed:
+`AltGr`), and frosts the background behind the overlay.
+
+Another switcher that binds `Alt`+`Tab`, such as altswitch or Woogy7's
+Workspace Switcher (`io.github.woogy7.workspaces`), can keep its lines in
+`bindings.lua`: Fathom's block goes last, after them, and takes `Alt`+`Tab`
+over. Once Fathom is disabled or removed, the snippet binds nothing, and the
+other switcher has `Alt`+`Tab` back at the next config reload. Or load the
+other switcher from Fathom's block, only when Fathom does not take `Alt`+`Tab`:
 
 <details>
 <summary>The block with a fallback switcher</summary>
@@ -199,6 +210,12 @@ had one). Hyprland reloads on save and `Alt`+`Tab` is Omarchy's again.
 
 ## Troubleshooting
 
+- **`Alt`+`Tab` is still the old switcher after `omarchy plugin add
+  --enable`.** Enabling loads the overlay only: `Alt`+`Tab` becomes Fathom's
+  with the block from step 2 of [Install](#install), at the end of
+  `~/.config/hypr/bindings.lua`, after any other switcher's lines.
+  `load-bindings --check` (above) says who owns `Alt`+`Tab` and what is
+  missing.
 - **`Alt`+`Tab` does nothing after `omarchy plugin disable`.** The bindings
   follow the shell's plugin list at each config reload: save
   `~/.config/hypr/bindings.lua` (or run `hyprctl reload`) and `Alt`+`Tab` is

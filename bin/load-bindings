@@ -65,6 +65,13 @@ persistent() {
   [[ -f $bindings ]] && grep -q "$plugin_id/hypr/fathom.lua" "$bindings"
 }
 
+# Enabled the way the snippet decides it: the shell's shell.json names the
+# plugin (a shell.json that cannot be read counts as enabled).
+enabled() {
+  local shell_json="$HOME/.config/omarchy/shell.json"
+  [[ ! -r $shell_json ]] || grep -qF "\"$plugin_id\"" "$shell_json"
+}
+
 report() {
   printf 'Alt+Tab: %s\n' "$(alt_tab_owner)"
   if persistent; then
@@ -76,8 +83,16 @@ report() {
 
 if [[ $mode == check ]]; then
   report
-  fathom_bound
-  exit
+  fathom_bound && exit 0
+  # Enabled, and still someone else's Alt+Tab (issue #6): say what is missing.
+  if enabled; then
+    if persistent; then
+      printf 'Fathom is enabled but does not hold Alt+Tab: its block goes last in %s, after any other switcher'\''s lines (README.md, "Install").\n' "$bindings"
+    else
+      printf 'Fathom is enabled but does not hold Alt+Tab yet: add the block from README.md, "Install", step 2, at the end of %s.\n' "$bindings"
+    fi
+  fi
+  exit 1
 fi
 
 [[ -f $snippet ]] || fail "Fathom is not installed ($snippet); run bash bin/dev-sync"
