@@ -177,7 +177,7 @@ Item {
       y: card.items.viewport ? card.items.viewport.y : 0
       width: card.items.viewport ? card.items.viewport.width : 0
       height: card.items.viewport ? card.items.viewport.height : 0
-      radius: card.appearance.cornerRadius
+      radius: Math.min(card.appearance.cornerRadius, 4 * card.unit)
       color: card.theme.screen
       border.width: card.appearance.borderWidth
       border.color: card.group.onScreen ? card.theme.screenBorderOn : card.theme.screenBorder
@@ -234,7 +234,7 @@ Item {
 
         Rectangle {
           anchors.fill: parent
-          radius: card.appearance.cornerRadius
+          radius: Math.min(card.appearance.cornerRadius, width / 4)
           color: tile.selected ? card.theme.tileSelected : (hover.containsMouse ? card.theme.tileHover : card.theme.tile)
         }
 
@@ -250,7 +250,7 @@ Item {
           Behavior on opacity { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
 
           sourceComponent: ClippingRectangle {
-            radius: card.appearance.cornerRadius
+            radius: Math.min(card.appearance.cornerRadius, width / 4)
             color: "transparent"
 
             Image {
@@ -304,7 +304,7 @@ Item {
           anchors.bottom: parent.bottom
           anchors.margins: 1
           height: Math.round(16 * card.textUnit)
-          radius: card.appearance.cornerRadius
+          radius: Math.min(card.appearance.cornerRadius, height / 2)
           opacity: tile.showsFrame ? 1 : 0
           visible: opacity > 0
           color: tile.roomy ? card.theme.panel : "transparent"
@@ -339,7 +339,7 @@ Item {
 
         Rectangle {
           anchors.fill: parent
-          radius: card.appearance.cornerRadius
+          radius: Math.min(card.appearance.cornerRadius, width / 4)
           color: "transparent"
           objectName: "tileOutline"
           border.width: card.appearance.borderWidth

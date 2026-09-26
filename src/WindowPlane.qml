@@ -58,7 +58,9 @@ Item {
   readonly property real depthScale: Math.min(1, geometry.scale)
   readonly property real headerHeight: Math.max(18 * textUnit, Math.min(30 * textUnit, height * 0.1))
   readonly property real pad: Math.max(3, 8 * unit * depthScale)
-  readonly property real radius: card.appearance.cornerRadius
+  // The shell's corner radius on the front card, shrinking with depth like
+  // the card itself (screen pixels: zero stays zero).
+  readonly property real radius: card.appearance.cornerRadius * depthScale
   readonly property real fog: entry
     ? theme.fogStrength * Math.min(0.7, Math.max(0, Math.min(1, r)) * (0.12 + Depth.fogForDepth(entry.depth) * 0.75) + 0.05 * Math.max(0, r - 1))
     : 0
@@ -198,7 +200,7 @@ Item {
       y: preview.fitted.y
       width: preview.fitted.width
       height: preview.fitted.height
-      radius: card.radius
+      radius: Math.max(0, card.radius * 0.55)
       color: card.theme.bed
 
       // Until a frame arrives, and for windows Hyprland does not render (a
@@ -287,7 +289,7 @@ Item {
       visible: card.showsSnapshot && frame.height > 70 * card.unit
       width: badgeText.implicitWidth + 14 * card.unit
       height: badgeText.implicitHeight + 6 * card.unit
-      radius: card.appearance.cornerRadius
+      radius: Math.min(card.appearance.cornerRadius, height / 2)
       color: card.theme.panel
       border.width: card.appearance.borderWidth
       border.color: card.theme.panelBorder

@@ -330,7 +330,7 @@ Item {
     y: view.margin
     height: 34 * view.unit
     width: filterRow.implicitWidth + 28 * view.unit
-    radius: view.appearance.cornerRadius
+    radius: Math.min(view.appearance.cornerRadius, height / 2)
     color: view.theme.panel
     border.width: view.appearance.borderWidth
     border.color: view.filtering ? view.theme.accent : view.theme.panelBorder
@@ -413,7 +413,7 @@ Item {
           anchors.verticalCenter: parent.verticalCenter
           width: Math.max(height, keyText.implicitWidth + 10 * view.unit)
           height: 18 * view.unit
-          radius: view.appearance.cornerRadius
+          radius: Math.min(view.appearance.cornerRadius, height / 2)
           color: view.theme.key
           border.width: view.appearance.borderWidth
           border.color: view.theme.keyBorder

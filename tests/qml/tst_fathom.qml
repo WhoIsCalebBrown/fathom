@@ -84,24 +84,30 @@ TestCase {
     setUpDesktop()
   }
 
+  // The front card and the workspace cards take the corner radius as it is;
+  // what sits inside them, and the controls, follow it within their own size.
   function verifyAppearance(fathom, radius, borderWidth) {
     const view = fathom.fieldView
     const plane = view.planeAt(fathom.selectedIndex)
     verify(plane !== null)
+    compare(plane.depthScale, 1)
     compare(plane.radius, radius)
     const outline = findChild(plane, "selectionOutline")
     compare(outline.radius, radius)
     compare(outline.border.width, borderWidth)
     compare(outline.anchors.margins, 0)
-    compare(findChild(plane, "previewFrame").radius, radius)
+    compare(findChild(plane, "previewFrame").radius, radius * 0.55)
     const workspace = findChild(view.map, "workspaceSurface")
     compare(workspace.radius, radius)
     compare(workspace.border.width, borderWidth)
     const tile = findChild(view.map.tileFor(fathom.selectedIndex), "tileOutline")
-    compare(tile.radius, radius)
+    verify(tile.width > 0)
+    compare(tile.radius, Math.min(radius, tile.width / 4))
     compare(tile.border.width, borderWidth)
-    compare(findChild(view, "filterBar").radius, radius)
-    compare(findChild(view, "filterBar").border.width, borderWidth)
+    const filterBar = findChild(view, "filterBar")
+    verify(filterBar.height > 0)
+    compare(filterBar.radius, Math.min(radius, filterBar.height / 2))
+    compare(filterBar.border.width, borderWidth)
   }
 
   function test_appearance_follows_shell_tokens_live() {
@@ -127,6 +133,30 @@ TestCase {
     verifyAppearance(fathom, 4, 0)
     Color.shellValues = ({})
     verifyAppearance(fathom, 20, 3)
+  }
+
+  function test_appearance_receded_cards_have_smaller_corners() {
+    const fathom = createFathom()
+    FakeSystem.ipc("fathom").open()
+    const view = fathom.fieldView
+    const front = view.planeAt(fathom.selectedIndex)
+    let behind = null
+    for (let i = 0; i < view.planeCount; i++) {
+      const plane = view.planeAt(i)
+      if (plane.inField && plane.r > 0 && (behind === null || plane.r < behind.r)) behind = plane
+    }
+    verify(behind !== null, "a card sits behind the selection")
+    verify(behind.depthScale < 1)
+    for (const token of [4, 12]) {
+      Style.cornerRadius = token
+      compare(front.radius, token)
+      verify(behind.radius > 0 && behind.radius < front.radius,
+        "the receded card's corner (" + behind.radius + ") is smaller than the front card's (" + front.radius + ")")
+      compare(behind.radius, token * behind.depthScale)
+    }
+    Style.cornerRadius = 0
+    compare(front.radius, 0)
+    compare(behind.radius, 0)
   }
 
   function test_appearance_invalid_overrides_fall_back() {
