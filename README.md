@@ -191,10 +191,20 @@ The full list is in [docs/SPEC.md](docs/SPEC.md#ipc).
 
 ## Appearance
 
-Card, preview, workspace and control corners follow Omarchy's
-`Style.cornerRadius` (Hyprland's `decoration:rounding`). Their borders follow
-`Style.normalBorderWidth`, without growing with the monitor size or selection.
-The selected card keeps its accent outline, aligned with the card's edge.
+Corners follow Omarchy's `Style.cornerRadius` (Hyprland's
+`decoration:rounding`). Omarchy's default is square (`rounding = 0`), so
+Fathom is square by default; the screenshots here show a rounded theme. The
+radius is the front card's corner, and the rest keeps its proportions to it:
+deeper cards round less as they shrink, the preview takes 0.55 of its card's
+corner, the workspace cards take the radius as it is, and smaller parts
+(tiles, badges, the filter bar) take it up to what their own size allows.
+
+Idle borders follow the shell's `Style.normalBorderWidth`
+(`normal-border-width` under `[controls]` in `shell.toml`, 1 by default). The
+selection keeps Fathom's own heavier widths, always at least a pixel over the
+idle border: the accent ring just outside the card, the workspace card
+holding it and its tile. An urgent window's outline is never lighter than
+the idle border.
 
 To override Fathom alone, add a section to `~/.config/omarchy/shell.toml`:
 
@@ -205,12 +215,15 @@ border-width = 2
 ```
 
 Both values are nonnegative pixels; zero is supported. Omit a key to follow
-the shell again. Empty, negative or nonnumeric values fall back to the shell.
+the shell again: `corner-radius` falls back to Hyprland's rounding,
+`border-width` to the shell's `[controls]` border width (not Hyprland's
+`border_size`). Empty, negative or nonnumeric values fall back the same way.
 Omarchy watches this user file and layers it over the current theme, so these
 preferences update live and survive theme changes and plugin updates. Themes
 may also provide the same `[fathom]` section in their own `shell.toml`.
 Fathom consumes the shell's existing values; it starts no process and performs
-no file I/O. Circular status markers and application artwork retain their shapes.
+no file I/O. Circular status markers and application icons (the lettered
+tile for an app without one too) keep their shapes.
 
 ## Update
 

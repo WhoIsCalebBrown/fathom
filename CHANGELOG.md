@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+- Corners and borders follow Omarchy's appearance: the corner radius is
+  Hyprland's `decoration:rounding` (square on a default Omarchy), and idle
+  borders take the shell's `[controls]` border width. A `[fathom]` section
+  in `~/.config/omarchy/shell.toml` (`corner-radius`, `border-width`)
+  overrides both for Fathom alone and updates live. The radius sets the
+  front card's corner and the rest keeps Fathom's proportions to it; the
+  selection stays heavier than the idle border at any width. By caniswim
+  (#7).
+
 ## 0.2.3 (unreleased)
 
 - `omarchy-shell fathom state` says whether the hold-mode watchdog is

@@ -86,6 +86,12 @@ Fathom runs inside Maarten's working session. These hold without exception:
   `tests/fixtures/omarchy-themes.json` holds the palettes Omarchy ships; the
   node tests hold every one to the contrast floors. Refresh it when Omarchy
   adds a theme.
+- Corner radii and border widths come from `FieldView.appearance` (one
+  `src/Appearance.qml`: Omarchy's `Style.cornerRadius` and
+  `Style.normalBorderWidth`, or the `[fathom]` section of `shell.toml`),
+  handed down like the theme. The radius is the front card's corner and the
+  rest is derived from it; only idle borders take the width, and emphasis
+  (selection, urgent) stays heavier (README "Appearance").
 - `src/FieldSurface.qml` is the only file that needs a real layer-shell window;
   the offscreen QML tests swap it for `tests/qml/FieldSurface.qml` and replace
   Quickshell with `tests/qml/stubs`. Keep everything else testable that way.

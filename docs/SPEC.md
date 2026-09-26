@@ -322,8 +322,11 @@ pointer. To confirm.
 
 Colors come from Omarchy's theme (`qs.Commons`: foreground, background,
 accent, urgent), derived by `src/Palette.js` and re-derived when the theme
-changes; text from `Style.font.family` and Omarchy's text size. Corner radii
-scale with the screen and with a card's depth.
+changes; text from `Style.font.family` and Omarchy's text size. Corners and
+idle borders follow Omarchy's `Style.cornerRadius` and `Style.normalBorderWidth`
+(or a `[fathom]` section in `shell.toml`): the radius is the front card's
+corner and shrinks with a card's depth, and the selection stays heavier than
+the idle border (README "Appearance").
 
 - A theme is light when its background is lighter than its text. Dark: glass
   cards lit from above, fog into the dark, the scene darkening as you dive.
