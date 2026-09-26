@@ -70,7 +70,7 @@ Item {
     anchors.fill: parent
     radius: card.appearance.cornerRadius
     color: card.holdsSelection ? card.theme.mapCardSelected : card.theme.mapCard
-    border.width: card.appearance.borderWidth
+    border.width: card.holdsSelection ? Math.max(card.appearance.borderWidth + 1, 1.5) : card.appearance.borderWidth
     border.color: card.holdsSelection ? card.theme.mapCardSelectedBorder : card.theme.mapCardBorder
 
     Behavior on border.color { ColorAnimation { duration: 140 } }
@@ -342,7 +342,7 @@ Item {
           radius: Math.min(card.appearance.cornerRadius, width / 4)
           color: "transparent"
           objectName: "tileOutline"
-          border.width: card.appearance.borderWidth
+          border.width: tile.selected ? Math.max(card.appearance.borderWidth + 1, 2 * card.unit) : card.appearance.borderWidth
           border.color: tile.selected ? card.theme.accent
             : (tile.urgent ? card.theme.urgent
               : (tile.entry && tile.entry.active ? card.theme.tileBorderActive : card.theme.tileBorder))

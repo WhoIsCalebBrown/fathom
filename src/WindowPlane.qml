@@ -126,6 +126,7 @@ Item {
   // Glass on a dark theme, paper on a light one: a little lighter at the
   // top, like light from the surface.
   Rectangle {
+    objectName: "cardSurface"
     anchors.fill: parent
     radius: card.radius
     border.width: card.appearance.borderWidth
@@ -312,14 +313,17 @@ Item {
     }
   }
 
+  // The selection's ring sits just outside the card, always heavier than
+  // the idle border; an urgent window's outline is never lighter than it.
   Rectangle {
     anchors.fill: parent
     objectName: "selectionOutline"
-    anchors.margins: 0
-    radius: card.radius
+    anchors.margins: card.selected ? -3 * card.unit : 0
+    radius: card.radius + (card.selected ? 3 * card.unit : 0)
     color: "transparent"
     visible: card.selected || card.urgent
-    border.width: card.appearance.borderWidth
+    border.width: card.selected ? Math.max(card.appearance.borderWidth + 1, 2.5 * card.unit)
+      : Math.max(card.appearance.borderWidth, 1.5)
     border.color: card.selected ? card.theme.accent : card.theme.urgent
   }
 

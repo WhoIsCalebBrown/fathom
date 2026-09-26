@@ -84,6 +84,13 @@ TestCase {
     setUpDesktop()
   }
 
+  function namedChildren(item, name, found) {
+    const list = found || []
+    if (item.objectName === name) list.push(item)
+    for (let i = 0; i < item.children.length; i++) namedChildren(item.children[i], name, list)
+    return list
+  }
+
   // The front card and the workspace cards take the corner radius as it is;
   // what sits inside them, and the controls, follow it within their own size.
   function verifyAppearance(fathom, radius, borderWidth) {
@@ -92,18 +99,25 @@ TestCase {
     verify(plane !== null)
     compare(plane.depthScale, 1)
     compare(plane.radius, radius)
+    compare(findChild(plane, "cardSurface").border.width, borderWidth)
+    // The selection ring sits outside the card, heavier than the idle border.
     const outline = findChild(plane, "selectionOutline")
-    compare(outline.radius, radius)
-    compare(outline.border.width, borderWidth)
-    compare(outline.anchors.margins, 0)
+    compare(outline.anchors.margins, -3 * plane.unit)
+    compare(outline.radius, radius + 3 * plane.unit)
+    compare(outline.border.width, Math.max(borderWidth + 1, 2.5 * plane.unit))
     compare(findChild(plane, "previewFrame").radius, radius * 0.55)
-    const workspace = findChild(view.map, "workspaceSurface")
-    compare(workspace.radius, radius)
-    compare(workspace.border.width, borderWidth)
+    const surfaces = namedChildren(view.map, "workspaceSurface")
+    verify(surfaces.length === 2)
+    for (let i = 0; i < surfaces.length; i++) {
+      compare(surfaces[i].radius, radius)
+      compare(surfaces[i].border.width, surfaces[i].parent.holdsSelection ? Math.max(borderWidth + 1, 1.5) : borderWidth)
+    }
     const tile = findChild(view.map.tileFor(fathom.selectedIndex), "tileOutline")
     verify(tile.width > 0)
     compare(tile.radius, Math.min(radius, tile.width / 4))
-    compare(tile.border.width, borderWidth)
+    compare(tile.border.width, Math.max(borderWidth + 1, 2 * view.unit))
+    const idleTile = findChild(view.map.tileFor(fathom.selectedIndex === 0 ? 1 : 0), "tileOutline")
+    compare(idleTile.border.width, borderWidth)
     const filterBar = findChild(view, "filterBar")
     verify(filterBar.height > 0)
     compare(filterBar.radius, Math.min(radius, filterBar.height / 2))
@@ -157,6 +171,40 @@ TestCase {
     Style.cornerRadius = 0
     compare(front.radius, 0)
     compare(behind.radius, 0)
+  }
+
+  function test_appearance_selection_stays_heavier_than_the_idle_border() {
+    const urgent = toplevel("c3", 2, 2)
+    urgent.urgent = true
+    setUpDesktop([toplevel("a1", 1, 0), toplevel("b2", 1, 1), urgent])
+    const fathom = createFathom()
+    FakeSystem.ipc("fathom").open()
+    const view = fathom.fieldView
+    const plane = view.planeAt(fathom.selectedIndex)
+    const ring = findChild(plane, "selectionOutline")
+    const idle = findChild(plane, "cardSurface")
+    const urgentPlane = view.planeAt(2)
+    verify(urgentPlane.urgent && !urgentPlane.selected)
+    const urgentOutline = findChild(urgentPlane, "selectionOutline")
+    const surfaces = namedChildren(view.map, "workspaceSurface")
+    const holding = surfaces.filter(surface => surface.parent.holdsSelection)
+    const other = surfaces.filter(surface => !surface.parent.holdsSelection)
+    verify(holding.length === 1 && other.length === 1)
+    const tile = findChild(view.map.tileFor(fathom.selectedIndex), "tileOutline")
+    const idleTile = findChild(view.map.tileFor(fathom.selectedIndex === 0 ? 1 : 0), "tileOutline")
+    for (const width of [1, 3]) {
+      Style.normalBorderWidth = width
+      compare(idle.border.width, width)
+      verify(ring.border.width > idle.border.width,
+        "the selection ring (" + ring.border.width + ") is wider than the idle border (" + width + ")")
+      compare(urgentOutline.anchors.margins, 0)
+      compare(urgentOutline.border.width, Math.max(width, 1.5))
+      verify(urgentOutline.border.width >= idle.border.width)
+      compare(other[0].border.width, width)
+      verify(holding[0].border.width > other[0].border.width)
+      compare(idleTile.border.width, width)
+      verify(tile.border.width > idleTile.border.width)
+    }
   }
 
   function test_appearance_invalid_overrides_fall_back() {
