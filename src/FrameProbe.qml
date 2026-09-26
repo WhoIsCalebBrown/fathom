@@ -1,6 +1,6 @@
-// Frame timing for the Phase 0 report. Only runs when asked (bench or the
-// probe IPC call), because a running FrameAnimation keeps the overlay
-// rendering every vsync.
+// Frame timing for `omarchy-shell fathom bench`. Only runs when asked (a
+// bench or the probe IPC call), because a running FrameAnimation keeps the
+// overlay rendering every vsync.
 //
 // Two measurements:
 //   * intervals between animation ticks of this window (FrameAnimation);

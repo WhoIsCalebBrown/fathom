@@ -1,7 +1,8 @@
 # Fathom engineering contract
 
 Fathom is a depth-based Alt-Tab overlay plugin for Omarchy Quattro. Read
-`docs/SPEC.md` before changing behavior and `docs/PHASE0.md` for status.
+`docs/SPEC.md` before changing behavior. `CHANGELOG.md` says what each release
+changed, and "Open checks" below what is not verified yet.
 
 > [!CAUTION]
 > Hyprland 0.56.2 crashed when Fathom's Lua snippet was loaded a second time
@@ -133,9 +134,10 @@ The skills (`omarchy-plugin-build`, `-check`, `-weigh`, `-submit`,
   over a new process.
 - **Check.** After every change, on the committed HEAD:
   `omakit inspect . --json`, `omakit verify . --json` and
-  `omakit submit . --category <c> --tags <a,b> --json --offline`. Category and
-  tags are Maarten's editorial choice; ask, never invent them. Fix the cause a
-  remedy names; never work around a check.
+  `omakit submit . --category <c> --tags <a,b> --json --offline`, with the
+  category and tags under "Submit and track": they are Maarten's editorial
+  choice, never invented. Fix the cause a remedy names; never work around a
+  check.
 - **Prove.** Every live test runs in the omakit lab, never on the desktop.
   `omakit lab prove` runs omakit's own suites only, so Fathom's scenarios run
   in the same disposable guest through omakit's lab code. Frame times in the
@@ -145,7 +147,9 @@ The skills (`omarchy-plugin-build`, `-check`, `-weigh`, `-submit`,
   (it restarts the shell it measures). Never on the desktop.
 - **Submit and track.** `omakit submit` without `--offline` produces the issue
   text; Maarten posts it, or says in so many words that an agent may. Never
-  open issues, comment or push on his behalf otherwise.
+  open issues, comment or push on his behalf otherwise. Fathom's category is
+  `Desktop` and its tags are `Hyprland`, `Quickshell` and `Workspaces`
+  (`--category Desktop --tags Hyprland,Quickshell,Workspaces`).
 - **Main is frozen while a submission is open.** The marketplace validates one
   commit, the default branch's HEAD when the issue is opened or edited, and
   reviewers approve only that commit. A push to main after it leaves the
@@ -176,9 +180,40 @@ The skills (`omarchy-plugin-build`, `-check`, `-weigh`, `-submit`,
     through the submission. Its issue freezes main the same way until the
     marketplace has published the new snapshot.
 
+## Platform notes
+
+Where the platform does not do what the spec expected:
+
+- `hyprctl binds -j` shows a Lua bind's dispatcher as `__lua` with a
+  reference number, not `global fathom:next`; the bind's description is what
+  identifies it (`bin/load-bindings` matches on it).
+- Hyprland handles a bound Alt chord before a layer surface with exclusive
+  keyboard focus sees it, so the snippet holds the `fathom` submap while Alt
+  is down.
+- Qt 6.11's `qmllint` has `--unresolved-type` (no `--type`), lets an
+  installed Quickshell win over the stub modules on the import path unless
+  `--bare` is given, and flags a `property var state` on an Item as
+  overriding `Item.state`.
+- `omakit verify` runs the marketplace baseline only when `origin` is a
+  github.com remote.
+- `npx skills add mtolhuys/omakit` replaces the `~/.claude/skills` symlinks
+  with copies and leaves older copies in `~/.agents/skills`.
+
+## Open checks
+
+Not verified yet, on the device or in the lab:
+
+- Frame times on the device with 10 and 25 windows.
+- A click on a card, the caption and the map, and a touchpad, by hand.
+- A sideways wheel: the lab guest's tablet delivers none, so the multi-step
+  fling is held by the QML test only.
+- That the focus request goes out on Hyprland's restore event (the 120 ms
+  fallback covers it either way).
+- Focusing a window on a hidden scratchpad.
+
 ## Phases
 
 Finish and report a phase before starting the next. Phase 0 (0.1.0) proved the
-mechanics. Phase 1 (0.2.0, `docs/PHASE1.md`) is the card layout, the workspace
-map, fog, blur, the wheel, arrows and the filter; mouse parallax is the one
-Phase 1 item still open.
+mechanics; Phase 1 (0.2.0) is the card layout, the workspace map, fog, blur,
+the wheel, arrows and the filter. Mouse parallax, the one Phase 1 item still
+open, is listed in README "Known limitations".

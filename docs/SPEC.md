@@ -10,11 +10,10 @@ really are.
 
 v1 is an overlay only: no real window moves.
 
-Status: 0.2.3. Phase 0 (0.1.0, see [PHASE0.md](PHASE0.md)) proved the
-mechanics; Phase 1 (0.2.0, see [PHASE1.md](PHASE1.md)) is the product: the
-card layout, the sounding line, the workspace map, fog, background blur,
-last-seen snapshots, the wheel, arrows and the filter. Mouse parallax is still
-open.
+Status: 0.2.3. Phase 0 (0.1.0) proved the mechanics; Phase 1 (0.2.0) is the
+product: the card layout, the sounding line, the workspace map, fog,
+background blur, last-seen snapshots, the wheel, arrows and the filter. Mouse
+parallax is still open. [CHANGELOG.md](../CHANGELOG.md) has every release.
 
 Rules marked **(kickstart)** come from the original brief. Rules marked
 **(decision)** were settled while building and can be revisited. Rules marked
@@ -261,7 +260,8 @@ whether it took Alt+Tab, so a caller can fall back to another switcher. It
 reads `shell.json` at each config load.
 
 A second load in the same Lua state does nothing: tearing a keybind or an
-event hook down from Lua crashed Hyprland 0.56.2 (see PHASE1.md). Changes to
+event hook down from Lua crashed Hyprland 0.56.2 (see
+[HYPRLAND-0.56.2-LUA-RELOAD-CRASH.md](HYPRLAND-0.56.2-LUA-RELOAD-CRASH.md)). Changes to
 the snippet take effect on `hyprctl reload`, which starts a fresh Lua state.
 The hooks are set up before anything that could fail, the submap is optional,
 so Alt+Tab works even where the submap cannot be defined, and the cosmetic
