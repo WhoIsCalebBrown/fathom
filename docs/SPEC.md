@@ -10,7 +10,7 @@ really are.
 
 v1 is an overlay only: no real window moves.
 
-Status: 0.2.2. Phase 0 (0.1.0, see [PHASE0.md](PHASE0.md)) proved the
+Status: 0.2.3. Phase 0 (0.1.0, see [PHASE0.md](PHASE0.md)) proved the
 mechanics; Phase 1 (0.2.0, see [PHASE1.md](PHASE1.md)) is the product: the
 card layout, the sounding line, the workspace map, fog, background blur,
 last-seen snapshots, the wheel, arrows and the filter. Mouse parallax is still
@@ -356,7 +356,7 @@ scale with the screen and with a card's depth.
 | `pin` | Keep the field open after Alt (switch to browse) |
 | `release` | Same as releasing Alt |
 | `commit` / `cancel` | Focus the selection / close without focusing |
-| `state` | JSON: build identity, open, revealed, mode, counts, filter, snapshots kept, Lua config |
+| `state` | JSON: build identity, open, revealed, mode, watchdog, counts, filter, snapshots kept, Lua config |
 | `field` | JSON: every window with app, workspace, age, depth and fog |
 | `captures` | JSON: per card, whether it captures, whether a frame arrived, whether it shows a snapshot, whether it is parked off screen, whether its workspace is on screen |
 | `bench <seconds>` | Open, dive every 250 ms with the frame probe on, close |

@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.3 (unreleased)
+
+- `omarchy-shell fathom state` says whether the hold-mode watchdog is
+  running (`watchdog`), so a switch stuck in hold mode, or one that runs
+  unwatched, shows from the shell. By nixfred (#3).
+- Installing takes two steps, and the README says so right under the
+  command: `--enable` loads the overlay but leaves `Alt`+`Tab` where it was
+  until Fathom's block is in `bindings.lua`. Another switcher (altswitch,
+  Woogy7's Workspace Switcher) can stay, with Fathom's block after it, and
+  has `Alt`+`Tab` back once Fathom is disabled or removed. Troubleshooting
+  starts with this case, and `load-bindings --check` says what is missing
+  when Fathom is enabled but does not hold `Alt`+`Tab`. Reported by
+  mightywomble (#6).
+
 ## 0.2.2 (2026-09-26)
 
 - Window titles, app names, workspace names and the filter render as plain

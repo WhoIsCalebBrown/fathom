@@ -364,7 +364,7 @@ TestCase {
   function test_ipc_state_reports_build_identity() {
     createFathom()
     const state = JSON.parse(FakeSystem.ipc("fathom").state())
-    compare(state.buildIdentity, "0.2.2-deep")
+    compare(state.buildIdentity, "0.2.3-deep")
     compare(state.opened, false)
     compare(state.usingLua, true)
     compare(state.trackedWindows, 3)
