@@ -17,14 +17,13 @@ import "Field.js" as Field
 Item {
   id: card
 
-  Appearance { id: appearance }
-
   required property var modelData
   required property int index
 
   // Set by FieldView.
   property var controller: null
   required property var theme
+  required property var appearance
   property var stage: null
   property real unit: 1
   property real textUnit: unit
@@ -59,7 +58,7 @@ Item {
   readonly property real depthScale: Math.min(1, geometry.scale)
   readonly property real headerHeight: Math.max(18 * textUnit, Math.min(30 * textUnit, height * 0.1))
   readonly property real pad: Math.max(3, 8 * unit * depthScale)
-  readonly property real radius: appearance.cornerRadius
+  readonly property real radius: card.appearance.cornerRadius
   readonly property real fog: entry
     ? theme.fogStrength * Math.min(0.7, Math.max(0, Math.min(1, r)) * (0.12 + Depth.fogForDepth(entry.depth) * 0.75) + 0.05 * Math.max(0, r - 1))
     : 0
@@ -127,7 +126,7 @@ Item {
   Rectangle {
     anchors.fill: parent
     radius: card.radius
-    border.width: appearance.borderWidth
+    border.width: card.appearance.borderWidth
     border.color: card.hovered ? card.theme.cardBorderHover : card.theme.cardBorder
     gradient: Gradient {
       GradientStop { position: 0; color: card.selected ? card.theme.cardSelectedTop : card.theme.cardTop }
@@ -276,7 +275,7 @@ Item {
       anchors.fill: frame
       radius: frame.radius
       color: "transparent"
-      border.width: appearance.borderWidth
+      border.width: card.appearance.borderWidth
       border.color: card.theme.frameEdge
     }
 
@@ -288,9 +287,9 @@ Item {
       visible: card.showsSnapshot && frame.height > 70 * card.unit
       width: badgeText.implicitWidth + 14 * card.unit
       height: badgeText.implicitHeight + 6 * card.unit
-      radius: appearance.cornerRadius
+      radius: card.appearance.cornerRadius
       color: card.theme.panel
-      border.width: appearance.borderWidth
+      border.width: card.appearance.borderWidth
       border.color: card.theme.panelBorder
 
       Text {
@@ -318,7 +317,7 @@ Item {
     radius: card.radius
     color: "transparent"
     visible: card.selected || card.urgent
-    border.width: appearance.borderWidth
+    border.width: card.appearance.borderWidth
     border.color: card.selected ? card.theme.accent : card.theme.urgent
   }
 

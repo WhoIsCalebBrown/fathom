@@ -13,6 +13,7 @@ Item {
   property var controller: null
   property var view: null
   required property var theme
+  required property var appearance
   property real unit: 1
   property real textUnit: unit
 
@@ -72,6 +73,7 @@ Item {
         controller: map.controller
         view: map.view
         theme: map.theme
+        appearance: map.appearance
         unit: map.unit
         textUnit: map.textUnit
         showMonitor: map.multiMonitor

@@ -15,8 +15,6 @@ import "Palette.js" as Palette
 Item {
   id: view
 
-  Appearance { id: appearance }
-
   property var controller: null
   readonly property alias probe: probe
   readonly property int planeCount: planes.count
@@ -27,6 +25,10 @@ Item {
   readonly property var theme: Palette.derive({
     foreground: Color.foreground, background: Color.background, accent: Color.accent, urgent: Color.urgent
   })
+  // Corner radius and border width: Omarchy's style tokens, or the user's
+  // [fathom] section of shell.toml (Appearance.qml). One instance for the
+  // whole field.
+  readonly property Appearance appearance: Appearance {}
 
   // One unit is a pixel on a 1000 px tall screen; everything scales with it.
   readonly property real unit: Math.max(0.75, Math.min(1.6, height / 1000))
@@ -160,6 +162,7 @@ Item {
       delegate: WindowPlane {
         controller: view.controller
         theme: view.theme
+        appearance: view.appearance
         stage: view.stage
         unit: view.unit
         textUnit: view.textUnit
@@ -327,9 +330,9 @@ Item {
     y: view.margin
     height: 34 * view.unit
     width: filterRow.implicitWidth + 28 * view.unit
-    radius: appearance.cornerRadius
+    radius: view.appearance.cornerRadius
     color: view.theme.panel
-    border.width: appearance.borderWidth
+    border.width: view.appearance.borderWidth
     border.color: view.filtering ? view.theme.accent : view.theme.panelBorder
     visible: view.filtering || (view.controller !== null && view.controller.mode === "browse")
 
@@ -410,9 +413,9 @@ Item {
           anchors.verticalCenter: parent.verticalCenter
           width: Math.max(height, keyText.implicitWidth + 10 * view.unit)
           height: 18 * view.unit
-          radius: appearance.cornerRadius
+          radius: view.appearance.cornerRadius
           color: view.theme.key
-          border.width: appearance.borderWidth
+          border.width: view.appearance.borderWidth
           border.color: view.theme.keyBorder
 
           Text {
@@ -460,6 +463,7 @@ Item {
     controller: view.controller
     view: view
     theme: view.theme
+    appearance: view.appearance
     unit: view.unit
     textUnit: view.textUnit
   }

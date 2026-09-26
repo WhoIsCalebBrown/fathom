@@ -7,8 +7,6 @@ import QtQuick
 Item {
   id: icon
 
-  Appearance { id: appearance }
-
   property string source: ""
   property string name: ""
   property real size: 24
@@ -48,7 +46,7 @@ Item {
   Rectangle {
     anchors.fill: parent
     visible: icon.missing
-    radius: appearance.cornerRadius
+    radius: width * 0.26
     color: Qt.hsla(icon.hue(icon.name || "?"), 0.32, 0.42, 1)
 
     Text {
