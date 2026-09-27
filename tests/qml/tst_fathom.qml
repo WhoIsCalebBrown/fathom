@@ -103,7 +103,7 @@ TestCase {
     // The selection ring sits outside the card, heavier than the idle border.
     const outline = findChild(plane, "selectionOutline")
     compare(outline.anchors.margins, -3 * plane.unit)
-    compare(outline.radius, radius + 3 * plane.unit)
+    compare(outline.radius, radius > 0 ? radius + 3 * plane.unit : 0)
     compare(outline.border.width, Math.max(borderWidth + 1, 2.5 * plane.unit))
     compare(findChild(plane, "previewFrame").radius, radius * 0.55)
     const surfaces = namedChildren(view.map, "workspaceSurface")
@@ -171,6 +171,21 @@ TestCase {
     Style.cornerRadius = 0
     compare(front.radius, 0)
     compare(behind.radius, 0)
+  }
+
+  function test_appearance_selection_ring_follows_the_card_corner() {
+    const fathom = createFathom()
+    FakeSystem.ipc("fathom").open()
+    const plane = fathom.fieldView.planeAt(fathom.selectedIndex)
+    verify(plane.selected)
+    const ring = findChild(plane, "selectionOutline")
+    Style.cornerRadius = 0
+    compare(plane.radius, 0)
+    compare(ring.anchors.margins, -3 * plane.unit)
+    compare(ring.radius, 0)
+    Style.cornerRadius = 12
+    verify(plane.radius > 0)
+    compare(ring.radius, plane.radius + 3 * plane.unit)
   }
 
   function test_appearance_selection_stays_heavier_than_the_idle_border() {

@@ -313,13 +313,14 @@ Item {
     }
   }
 
-  // The selection's ring sits just outside the card, always heavier than
-  // the idle border; an urgent window's outline is never lighter than it.
+  // The selection's ring sits just outside the card and follows its corner
+  // (square around a square card), always heavier than the idle border; an
+  // urgent window's outline is never lighter than it.
   Rectangle {
     anchors.fill: parent
     objectName: "selectionOutline"
     anchors.margins: card.selected ? -3 * card.unit : 0
-    radius: card.radius + (card.selected ? 3 * card.unit : 0)
+    radius: card.selected && card.radius > 0 ? card.radius + 3 * card.unit : card.radius
     color: "transparent"
     visible: card.selected || card.urgent
     border.width: card.selected ? Math.max(card.appearance.borderWidth + 1, 2.5 * card.unit)
