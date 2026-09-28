@@ -305,6 +305,16 @@ test('the visible order drops closed windows and filter misses', () => {
   assert.deepEqual(Array.from(Field.slotsFor([0, 2], 3)), [0, -1, 1]);
 });
 
+test('the visible order drops scratchpads when showScratchpads is false', () => {
+  const entries = [
+    entry('a1', { workspaceName: '1' }),
+    entry('b2', { workspaceName: 'special:term' }),
+    entry('c3', { workspaceName: '2' })
+  ];
+  assert.deepEqual(Array.from(Field.visibleOrder(entries, {}, '', true)), [0, 1, 2]);
+  assert.deepEqual(Array.from(Field.visibleOrder(entries, {}, '', false)), [0, 2]);
+});
+
 test('Tab wraps, arrows and the wheel stop at the ends', () => {
   const order = [0, 2, 5];
   assert.equal(Field.step(order, 0, 1, true), 2);
