@@ -75,6 +75,10 @@ plain non-zero hex is rejected before it can reach a dispatch string.
 
 - Every mapped window on every workspace and every monitor, scratchpads
   (special workspaces) included. **(owner: "all workspaces")**
+- `show-scratchpads = false` in the `[fathom]` section of `shell.toml`
+  leaves scratchpads out of the Deep, live, even while the field is open; the
+  map keeps them, and a hidden scratchpad never holds the selection (README
+  "Settings"). **(decision)**
 - Excluded: unmapped windows, and windows without a Wayland toplevel handle
   (they cannot be captured). **(decision)**
 - Order, front to back: the focused window, then ascending seconds since
@@ -326,7 +330,7 @@ changes; text from `Style.font.family` and Omarchy's text size. Corners and
 idle borders follow Omarchy's `Style.cornerRadius` and `Style.normalBorderWidth`
 (or a `[fathom]` section in `shell.toml`): the radius is the front card's
 corner and shrinks with a card's depth, and the selection stays heavier than
-the idle border (README "Appearance").
+the idle border (README "Settings").
 
 - A theme is light when its background is lighter than its text. Dark: glass
   cards lit from above, fog into the dark, the scene darkening as you dive.

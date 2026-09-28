@@ -194,6 +194,15 @@ TestCase {
     render("rounded-appearance", fathom)
   }
 
+  // The scene of 03-fifteen-deep with the scratchpad left out of the Deep; the
+  // map still shows it.
+  function test_scratchpads_hidden() {
+    Color.shellValues = ({ "fathom.show-scratchpads": "false" })
+    const fathom = open(15, 1600, 1000, "hold")
+    for (let i = 0; i < 4; i++) FakeSystem.press("fathom", "next")
+    render("scratchpads-hidden", fathom)
+  }
+
   function test_1_three_windows() {
     const fathom = open(3, 1600, 1000, "hold")
     render("01-three-windows", fathom)

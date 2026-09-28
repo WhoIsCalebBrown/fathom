@@ -37,26 +37,12 @@ Item {
 
   // Read by the shell (isPluginOpen) as well as by the view.
   property bool opened: false
-  // Whether special workspaces (scratchpads) are included in the field.
-  // Defaults to true, configurable in shell.json under this plugin's properties.
-  property bool showScratchpads: true
+  // Whether windows on special workspaces (scratchpads) are in the Deep:
+  // `show-scratchpads` in the [fathom] section of shell.toml (Appearance.qml),
+  // live. The map shows them either way.
+  readonly property bool showScratchpads: surface.view.appearance.showScratchpads
+  onShowScratchpadsChanged: if (root.opened) root.refreshOrder()
 
-  function readPluginConfig() {
-    const list = (shell && shell.shellConfig && Array.isArray(shell.shellConfig.plugins)) ? shell.shellConfig.plugins : []
-    for (let i = 0; i < list.length; i++) {
-      if (list[i] && String(list[i].id) === root.pluginId) return list[i]
-    }
-    return ({})
-  }
-
-  function syncScratchpadPreference() {
-    const cfg = root.readPluginConfig()
-    if (cfg.showScratchpads !== undefined) {
-      root.showScratchpads = Boolean(cfg.showScratchpads)
-    }
-  }
-
-  onShellChanged: root.syncScratchpadPreference()
   // Whether the field is drawn. In hold mode it appears after 90 ms
   // (revealTimer), so a quick Alt+Tab switches without flashing the overlay;
   // the surface
@@ -403,7 +389,6 @@ Item {
   }
 
   function showField(entries, nextMode, step, now) {
-    root.syncScratchpadPreference()
     root.cameraAnimated = false
     root.targetScreen = root.screenForFocusedMonitor()
     root.mode = nextMode
@@ -417,7 +402,8 @@ Item {
     root.groups = Field.workspaceGroups(entries, root.visibleWorkspaces(), root.visibleWorkspaceIds())
     root.order = Field.visibleOrder(entries, root.closed, "", root.showScratchpads)
     root.slots = Field.slotsFor(root.order, entries.length)
-    root.select(Recency.initialSelection(entries.length, step))
+    // A hidden scratchpad passes the selection to the window behind it.
+    root.select(Field.reselect(root.order, Recency.initialSelection(entries.length, step), entries.map((entry, index) => index)))
     root.openedAtMs = now
     root.firstContentMs = -1
     root.revealed = nextMode !== "hold"

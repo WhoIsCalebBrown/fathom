@@ -10,6 +10,9 @@
   front card's corner and the rest keeps Fathom's proportions to it; the
   selection stays heavier than the idle border at any width. By caniswim
   (#7).
+- `show-scratchpads = false` in the same `[fathom]` section leaves
+  scratchpads out of the Deep, live; the map still shows them, and Alt+Tab
+  passes over a hidden one. By CJKaufman (#5).
 
 ## 0.2.3 (unreleased)
 

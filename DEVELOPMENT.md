@@ -91,7 +91,10 @@ Fathom runs inside Maarten's working session. These hold without exception:
   `Style.normalBorderWidth`, or the `[fathom]` section of `shell.toml`),
   handed down like the theme. The radius is the front card's corner and the
   rest is derived from it; only idle borders take the width, and emphasis
-  (selection, urgent) stays heavier (README "Appearance").
+  (selection, urgent) stays heavier (README "Settings"). The same instance
+  holds `show-scratchpads`, which `Fathom.qml` binds to: every `[fathom]`
+  key is read through `Color.pick` there, since a plugin gets no settings of
+  its own from the shell.
 - `src/FieldSurface.qml` is the only file that needs a real layer-shell window;
   the offscreen QML tests swap it for `tests/qml/FieldSurface.qml` and replace
   Quickshell with `tests/qml/stubs`. Keep everything else testable that way.

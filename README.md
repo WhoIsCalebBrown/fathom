@@ -189,7 +189,7 @@ omarchy-shell fathom captures   # which cards capture and which received a frame
 
 The full list is in [docs/SPEC.md](docs/SPEC.md#ipc).
 
-## Appearance
+## Settings
 
 Corners follow Omarchy's `Style.cornerRadius` (Hyprland's
 `decoration:rounding`). Omarchy's default is square (`rounding = 0`), so
@@ -206,21 +206,30 @@ idle border: the accent ring just outside the card, the workspace card
 holding it and its tile. An urgent window's outline is never lighter than
 the idle border.
 
-To override Fathom alone, add a section to `~/.config/omarchy/shell.toml`:
+To change Fathom alone, add a section to `~/.config/omarchy/shell.toml`:
 
 ```toml
 [fathom]
 corner-radius = 0
 border-width = 2
+show-scratchpads = false
 ```
 
-Both values are nonnegative pixels; zero is supported. Omit a key to follow
+| Key | Default | Description |
+| :--- | :--- | :--- |
+| `corner-radius` | Hyprland's rounding | The front card's corner, in pixels. |
+| `border-width` | the shell's `[controls]` border width | Idle borders, in pixels. |
+| `show-scratchpads` | `true` | When `false`, windows on special workspaces (scratchpads) drop out of the visible depth stack while staying visible on the workspace map. |
+
+Both sizes are nonnegative pixels; zero is supported. Omit a key to follow
 the shell again: `corner-radius` falls back to Hyprland's rounding,
 `border-width` to the shell's `[controls]` border width (not Hyprland's
 `border_size`). Empty, negative or nonnumeric values fall back the same way.
+Only `false` (in any case) hides scratchpads; any other value keeps them.
 Omarchy watches this user file and layers it over the current theme, so these
-preferences update live and survive theme changes and plugin updates. Themes
-may also provide the same `[fathom]` section in their own `shell.toml`.
+preferences update live, even while the overlay is open, and survive theme
+changes and plugin updates. Themes may also provide the same `[fathom]`
+section in their own `shell.toml`.
 Fathom consumes the shell's existing values; it starts no process and performs
 no file I/O. Circular status markers and application icons (the lettered
 tile for an app without one too) keep their shapes.
@@ -243,21 +252,6 @@ omarchy plugin remove io.github.mtolhuys.fathom
 Then delete the `fathom: begin` to `fathom: end` block from
 `~/.config/hypr/bindings.lua` (put back your previous switcher's line if you
 had one). Hyprland reloads on save and `Alt`+`Tab` is Omarchy's again.
-
-## Settings
-
-Fathom respects options placed on its entry in `~/.config/omarchy/shell.json`:
-
-```json
-{
-  "id": "io.github.mtolhuys.fathom",
-  "showScratchpads": false
-}
-```
-
-| Option | Default | Description |
-| :--- | :--- | :--- |
-| `showScratchpads` | `true` | When `false`, windows on special workspaces (scratchpads) drop out of the visible depth stack while staying visible on the workspace map. |
 
 ## Troubleshooting
 

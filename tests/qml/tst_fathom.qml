@@ -222,6 +222,20 @@ TestCase {
     }
   }
 
+  // Only "false" hides scratchpads, in any case and with spaces around it;
+  // anything else, or no value, keeps them.
+  function test_appearance_show_scratchpads_hides_only_on_false() {
+    const fathom = createFathom()
+    const appearance = fathom.fieldView.appearance
+    verify(appearance.showScratchpads)
+    const cases = [["false", false], ["FALSE", false], [" false ", false], ["no", true], ["", true]]
+    for (let i = 0; i < cases.length; i++) {
+      Color.shellValues = ({ "fathom.show-scratchpads": cases[i][0] })
+      compare(appearance.showScratchpads, cases[i][1], JSON.stringify(cases[i][0]))
+      compare(fathom.showScratchpads, cases[i][1], JSON.stringify(cases[i][0]))
+    }
+  }
+
   function test_appearance_invalid_overrides_fall_back() {
     const fathom = createFathom()
     FakeSystem.ipc("fathom").open()
@@ -437,13 +451,69 @@ TestCase {
       scratch,
       toplevel("e5", 3, 4)
     ])
+    Color.shellValues = ({ "fathom.show-scratchpads": "false" })
     const fathom = createFathom()
-    fathom.showScratchpads = false
+    verify(!fathom.showScratchpads)
     FakeSystem.ipc("fathom").open()
     compare(fathom.field.length, 3, "field keeps all windows")
     compare(fathom.order.length, 2, "order excludes scratchpad")
     compare(fathom.field[fathom.order[0]].address, "a1")
     compare(fathom.field[fathom.order[1]].address, "e5")
+    compare(fathom.groups.map(group => group.label), ["1", "3", "term"], "the map keeps the scratchpad")
+  }
+
+  // A hidden scratchpad never takes the selection: Alt+Tab passes over it to
+  // the window behind it, and opening from a scratchpad starts at the most
+  // recent window shown.
+  function test_hidden_scratchpads_are_never_selected_on_open() {
+    const scratch = toplevel("b2", -98, 1)
+    scratch.workspace = { id: -98, name: "special:term" }
+    setUpDesktop([toplevel("a1", 1, 0), scratch, toplevel("e5", 3, 4)])
+    Color.shellValues = ({ "fathom.show-scratchpads": "false" })
+    const fathom = createFathom()
+    openHeld(fathom)
+    compare(fathom.selectedEntry.address, "e5")
+    keyRelease(Qt.Key_Alt)
+    verify(!fathom.opened)
+    tryCompare(Hyprland, "dispatches", ['hl.dsp.focus({ window = "address:0xe5" })'], 1000)
+
+    const current = toplevel("b2", -98, 0)
+    current.workspace = { id: -98, name: "special:term" }
+    setUpDesktop([current, toplevel("a1", 1, 1), toplevel("e5", 3, 4)])
+    const fromScratchpad = createFathom()
+    FakeSystem.ipc("fathom").open()
+    compare(fromScratchpad.selectedEntry.address, "a1")
+  }
+
+  // Changing the setting while the field is open takes effect at once; the
+  // selection and the pin stay, and a hidden selection moves behind.
+  function test_scratchpads_hide_and_return_while_open() {
+    const scratch = toplevel("b2", -98, 1)
+    scratch.workspace = { id: -98, name: "special:term" }
+    setUpDesktop([toplevel("a1", 1, 0), scratch, toplevel("e5", 3, 4)])
+    const fathom = createFathom()
+    openHeld(fathom)
+    keyPress(Qt.Key_Space, Qt.AltModifier)
+    verify(fathom.pinned)
+    keyPress(Qt.Key_Down)
+    compare(fathom.selectedEntry.address, "e5")
+
+    Color.shellValues = ({ "fathom.show-scratchpads": "false" })
+    compare(Array.from(fathom.order), [0, 2])
+    compare(fathom.slots[1], -1)
+    compare(fathom.selectedEntry.address, "e5", "the selection stays")
+    verify(fathom.pinned, "the pin stays")
+
+    Color.shellValues = ({})
+    compare(Array.from(fathom.order), [0, 1, 2])
+    compare(fathom.selectedEntry.address, "e5")
+    verify(fathom.pinned)
+
+    keyPress(Qt.Key_Up)
+    compare(fathom.selectedEntry.address, "b2")
+    Color.shellValues = ({ "fathom.show-scratchpads": "FALSE" })
+    compare(fathom.selectedEntry.address, "e5", "a hidden selection moves to the window behind it")
+    verify(fathom.opened)
   }
 
   function test_cards_recede_and_the_camera_follows() {

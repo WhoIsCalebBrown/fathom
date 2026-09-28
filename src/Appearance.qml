@@ -7,6 +7,9 @@ QtObject {
   // Missing or invalid values follow the shell's structural style tokens.
   readonly property real cornerRadius: dimension(Color.pick("fathom.corner-radius", ""), Style.cornerRadius)
   readonly property real borderWidth: dimension(Color.pick("fathom.border-width", ""), Style.normalBorderWidth)
+  // Scratchpads (special workspaces) stay in the Deep unless the value is
+  // "false"; the map shows them either way.
+  readonly property bool showScratchpads: String(Color.pick("fathom.show-scratchpads", "")).trim().toLowerCase() !== "false"
 
   function dimension(value, fallback) {
     const text = String(value).trim()
