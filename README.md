@@ -244,6 +244,21 @@ Then delete the `fathom: begin` to `fathom: end` block from
 `~/.config/hypr/bindings.lua` (put back your previous switcher's line if you
 had one). Hyprland reloads on save and `Alt`+`Tab` is Omarchy's again.
 
+## Settings
+
+Fathom respects options placed on its entry in `~/.config/omarchy/shell.json`:
+
+```json
+{
+  "id": "io.github.mtolhuys.fathom",
+  "showScratchpads": false
+}
+```
+
+| Option | Default | Description |
+| :--- | :--- | :--- |
+| `showScratchpads` | `true` | When `false`, windows on special workspaces (scratchpads) drop out of the visible depth stack while staying visible on the workspace map. |
+
 ## Troubleshooting
 
 - **`Alt`+`Tab` is still the old switcher after `omarchy plugin add

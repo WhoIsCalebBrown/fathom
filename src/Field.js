@@ -120,15 +120,18 @@ function matchesQuery(entry, query) {
     return true;
 }
 
-// Entry indices shown, front to back: not closed, matching the query.
+// Entry indices shown, front to back: not closed, matching the query,
+// and matching scratchpad visibility setting.
 // `closed` maps an entry address to true.
-function visibleOrder(entries, closed, query) {
+function visibleOrder(entries, closed, query, showScratchpads) {
     var list = entries && entries.length !== undefined ? entries : [];
     var gone = closed || {};
     var order = [];
+    var includeScratchpads = showScratchpads !== false;
     for (var i = 0; i < list.length; i++) {
         var entry = list[i];
         if (!entry || gone[entry.address]) continue;
+        if (!includeScratchpads && isSpecialName(entry.workspaceName)) continue;
         if (!matchesQuery(entry, query)) continue;
         order.push(i);
     }
