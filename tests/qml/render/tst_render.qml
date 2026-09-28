@@ -195,11 +195,13 @@ TestCase {
   }
 
   // The scene of 03-fifteen-deep with the scratchpad left out of the Deep; the
-  // map still shows it.
+  // map still shows it. The header and the counter both leave it out.
   function test_scratchpads_hidden() {
     Color.shellValues = ({ "fathom.show-scratchpads": "false" })
     const fathom = open(15, 1600, 1000, "hold")
     for (let i = 0; i < 4; i++) FakeSystem.press("fathom", "next")
+    compare(findChild(fathom.fieldView, "summary").text, "14 windows  ·  7 workspaces")
+    compare(findChild(fathom.fieldView, "counter").text, "6 / 14")
     render("scratchpads-hidden", fathom)
   }
 

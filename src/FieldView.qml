@@ -263,6 +263,7 @@ Item {
 
     Text {
       id: counter
+      objectName: "counter"
 
       anchors.right: parent.right
       anchors.verticalCenter: parent.verticalCenter
@@ -302,7 +303,11 @@ Item {
 
   // ------------------------------------------------------------ summary
 
+  // What the Deep holds, as the counter does: hidden scratchpads and closed
+  // windows are not counted, nor a workspace left without a shown window.
   Text {
+    objectName: "summary"
+
     x: view.margin
     y: view.margin + 8 * view.unit
     visible: !filterBar.visible && view.controller !== null
@@ -313,8 +318,8 @@ Item {
     text: {
       const controller = view.controller
       if (!controller) return ""
-      const windows = controller.field.length
-      const workspaces = controller.groups.filter(group => group.entries.length > 0).length
+      const windows = controller.order.length
+      const workspaces = controller.groups.filter(group => group.entries.some(index => controller.slots[index] >= 0)).length
       return windows + (windows === 1 ? " window" : " windows") + "  \u00b7  "
         + workspaces + (workspaces === 1 ? " workspace" : " workspaces")
     }
