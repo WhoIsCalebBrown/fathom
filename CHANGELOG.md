@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 (unreleased)
 
 - Corners and borders follow Omarchy's appearance: the corner radius is
   Hyprland's `decoration:rounding` (square on a default Omarchy), and idle
@@ -13,9 +13,6 @@
 - `show-scratchpads = false` in the same `[fathom]` section leaves
   scratchpads out of the Deep, live; the map still shows them, and Alt+Tab
   passes over a hidden one. By CJKaufman (#5).
-
-## 0.2.3 (unreleased)
-
 - `omarchy-shell fathom state` says whether the hold-mode watchdog is
   running (`watchdog`), so a switch stuck in hold mode, or one that runs
   unwatched, shows from the shell. By nixfred (#3).
